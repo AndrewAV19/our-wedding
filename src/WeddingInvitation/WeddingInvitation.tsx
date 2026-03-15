@@ -183,9 +183,12 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
     textFaint: "#6b4020",
     border:    "rgba(150,100,30,0.30)",
     shadow:    "rgba(80,30,10,0.18)",
-    ts:        "0 1px 8px rgba(255,255,255,0.98), 0 0 4px rgba(255,255,255,1)",
-    tsScript: "0 2px 12px rgba(255,255,255,1), 0 0 8px rgba(255,255,255,0.98), 0 4px 16px rgba(255,255,255,0.95)",
-    tsFaint:  "0 1px 6px rgba(255,255,255,0.98), 0 0 3px rgba(255,255,255,1)",
+    ts:        "0 2px 10px rgba(255,255,240,0.95), 2px 2px 4px rgba(0,0,0,0.05)",
+    tsScript: "0 3px 15px rgba(255,255,240,1), 2px 4px 8px rgba(0,0,0,0.08)",
+    tsFaint:  "0 1px 8px rgba(255,255,240,0.95), 1px 1px 3px rgba(0,0,0,0.03)",
+    // Nuevas sombras más fuertes para mejorar legibilidad
+    tsStrong: "0 2px 12px rgba(255,250,240,0.98), 2px 2px 6px rgba(0,0,0,0.12)",
+    tsStronger: "0 3px 18px rgba(255,250,240,1), 3px 4px 8px rgba(0,0,0,0.15)",
   };
 
   const scriptFont = { fontFamily:"'Pinyon Script',cursive" };
@@ -203,7 +206,6 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
 
         {/* ─── Card wrapper ─── */}
         <Box sx={{
-          // ── IMAGEN DE FONDO COMO MARCA DE AGUA ──────────────────
           position: "relative",
           border: `1px solid ${T.border}`,
           borderRadius: "28px",
@@ -211,7 +213,7 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
           boxShadow: `0 32px 80px ${T.shadow}, inset 0 1px 0 rgba(255,255,255,0.9)`,
         }}>
 
-          {/* 1. Imagen de fondo (marca de agua) */}
+          {/* 1. Imagen de fondo con opacidad reducida (más clara) */}
           <Box
             component="img"
             src="/imgFondo.jpeg"
@@ -223,32 +225,40 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
               height: "100%",
               objectFit: "cover",
               objectPosition: "center top",
-              // Opacidad baja = efecto marca de agua
-              opacity: 0.18,
-              // Desaturar un poco para que no compita con el texto
-              filter: "saturate(0.6) brightness(1.05)",
+              opacity: 0.28,
+              filter: "saturate(0.6) brightness(1.15)",
               pointerEvents: "none",
               userSelect: "none",
               zIndex: 0,
             }}
           />
 
-          {/* 2. Velo blanco degradado: más opaco arriba (nombres) → más transparente abajo */}
+          {/* 2. Velo blanco mejorado: más opaco para mejor legibilidad */}
           <Box sx={{
             position: "absolute",
             inset: 0,
             background: `linear-gradient(
               to bottom,
-              rgba(255,253,249,0.50) 0%,
-              rgba(253,246,236,0.35) 40%,
-              rgba(250,240,228,0.30) 70%,
-              rgba(250,240,228,0.42) 100%
+              rgba(255,253,249,0.65) 0%,    /* Aumentado opacidad */
+              rgba(253,246,236,0.55) 30%,    /* Aumentado opacidad */
+              rgba(250,240,228,0.48) 60%,    /* Aumentado opacidad */
+              rgba(250,240,228,0.52) 100%    /* Aumentado opacidad */
             )`,
             pointerEvents: "none",
             zIndex: 1,
           }}/>
 
-          {/* 3. Todo el contenido encima de la imagen */}
+          {/* 3. Capa adicional de difuminado para suavizar el fondo */}
+          <Box sx={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(255, 248, 240, 0.15)",
+            backdropFilter: "blur(1px)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}/>
+
+          {/* 4. Todo el contenido encima de las capas de fondo */}
           <Box sx={{ position:"relative", zIndex:2 }}>
 
             {/* Lace top */}
@@ -280,59 +290,116 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                 }}>
                   <HeartIcon sx={{ fontSize:32, color:T.rose, animation:"wi-pulse 2.2s infinite" }}/>
                 </Box>
-                <Typography sx={{ ...serifFont, fontSize:11, letterSpacing:"0.3em", color:T.textFaint, textTransform:"uppercase", textShadow:T.tsFaint }}>
+                <Typography sx={{ ...serifFont, fontSize:12, letterSpacing:"0.3em", color:T.textFaint, textTransform:"uppercase", textShadow:T.tsFaint, fontWeight:500 }}>
                   ✦ Invitación de Boda ✦
                 </Typography>
               </Box>
 
-              {/* Names */}
+              {/* Names - Aumentado tamaño y mejorado sombras */}
               <Box className="wi-reveal wi-reveal-2" sx={{ textAlign:"center", mb:2 }}>
-                <Typography sx={{ ...scriptFont, fontSize:{xs:52,sm:68}, color:T.roseDark, lineHeight:1, mb:0.5, textShadow:`2px 4px 16px ${T.rose}50, ${T.tsScript}` }}>
+                <Typography sx={{ 
+                  ...scriptFont, 
+                  fontSize:{xs:58,sm:74}, // Aumentado tamaño
+                  color:T.roseDark, 
+                  lineHeight:1, 
+                  mb:0.5, 
+                  textShadow:`2px 4px 20px ${T.rose}60, 0 2px 10px rgba(255,255,240,1)`, // Mejorada sombra
+                  fontWeight:500,
+                  letterSpacing:"0.02em"
+                }}>
                   {novio}
                 </Typography>
                 <Box sx={{ display:"flex", alignItems:"center", justifyContent:"center", gap:2, my:0.5 }}>
-                  <Box sx={{ flex:1, height:"0.5px", background:`linear-gradient(90deg,transparent,${T.gold}80)` }}/>
-                  <Typography sx={{ ...scriptFont, fontSize:28, color:T.gold }}>&</Typography>
-                  <Box sx={{ flex:1, height:"0.5px", background:`linear-gradient(90deg,${T.gold}80,transparent)` }}/>
+                  <Box sx={{ flex:1, height:"1px", background:`linear-gradient(90deg,transparent,${T.gold}80)` }}/>
+                  <Typography sx={{ ...scriptFont, fontSize:32, color:T.gold, textShadow:T.tsScript }}>&</Typography>
+                  <Box sx={{ flex:1, height:"1px", background:`linear-gradient(90deg,${T.gold}80,transparent)` }}/>
                 </Box>
-                <Typography sx={{ ...scriptFont, fontSize:{xs:52,sm:68}, color:T.roseDark, lineHeight:1, textShadow:`2px 4px 16px ${T.rose}50, ${T.tsScript}` }}>
+                <Typography sx={{ 
+                  ...scriptFont, 
+                  fontSize:{xs:58,sm:74}, // Aumentado tamaño
+                  color:T.roseDark, 
+                  lineHeight:1, 
+                  textShadow:`2px 4px 20px ${T.rose}60, 0 2px 10px rgba(255,255,240,1)`, // Mejorada sombra
+                  fontWeight:500,
+                  letterSpacing:"0.02em"
+                }}>
                   {novia}
                 </Typography>
               </Box>
 
-              {/* Frase */}
+              {/* Frase - Aumentado tamaño */}
               <Box className="wi-reveal wi-reveal-3" sx={{ textAlign:"center", mb:4 }}>
-                <Typography sx={{ ...serifFont, fontStyle:"italic", fontSize:{xs:15,sm:17}, color:T.textMid, letterSpacing:"0.04em", textShadow:T.ts }}>
+                <Typography sx={{ 
+                  ...serifFont, 
+                  fontStyle:"italic", 
+                  fontSize:{xs:17,sm:19}, // Aumentado tamaño
+                  color:T.textMid, 
+                  letterSpacing:"0.04em", 
+                  textShadow:T.tsStrong, // Sombra mejorada
+                  fontWeight:500,
+                  px:2
+                }}>
                   "{frasePersonal}"
                 </Typography>
               </Box>
 
               <Ornament color={T.goldLight}/>
 
-              {/* Parents */}
+              {/* Parents - Mejorada legibilidad */}
               <Box className="wi-reveal wi-reveal-3" sx={{ textAlign:"center", my:4 }}>
-                <Typography sx={{ ...serifFont, fontSize:11, letterSpacing:"0.28em", color:T.textFaint, textTransform:"uppercase", mb:2.5, textShadow:T.tsFaint }}>
+                <Typography sx={{ 
+                  ...serifFont, 
+                  fontSize:12, 
+                  letterSpacing:"0.28em", 
+                  color:T.textFaint, 
+                  textTransform:"uppercase", 
+                  mb:2.5, 
+                  textShadow:T.tsFaint,
+                  fontWeight:500
+                }}>
                   Con la bendición de nuestros padres
                 </Typography>
                 {["Sra. Yolanda Valenzuela Trujillo","Sr. Adrian Alonso Díaz"].map(p=>(
-                  <Typography key={p} sx={{ ...serifFont, fontSize:16, color:T.textMid, lineHeight:1.85, textShadow:T.ts }}>{p}</Typography>
+                  <Typography key={p} sx={{ 
+                    ...serifFont, 
+                    fontSize:17, // Aumentado tamaño
+                    color:T.text, 
+                    lineHeight:1.9, 
+                    textShadow:T.tsStrong, // Mejorada sombra
+                    fontWeight:500
+                  }}>{p}</Typography>
                 ))}
-                <Box sx={{ my:1.5, color:T.goldLight, fontSize:16, letterSpacing:8 }}>✦ ✦ ✦</Box>
+                <Box sx={{ my:1.5, color:T.goldLight, fontSize:18, letterSpacing:8 }}>✦ ✦ ✦</Box>
                 {["Sra. Isis del Carmen Marquez","Sr. Francisco Hernandez"].map(p=>(
-                  <Typography key={p} sx={{ ...serifFont, fontSize:16, color:T.textMid, lineHeight:1.85, textShadow:T.ts }}>{p}</Typography>
+                  <Typography key={p} sx={{ 
+                    ...serifFont, 
+                    fontSize:17, // Aumentado tamaño
+                    color:T.text, 
+                    lineHeight:1.9, 
+                    textShadow:T.tsStrong, // Mejorada sombra
+                    fontWeight:500
+                  }}>{p}</Typography>
                 ))}
               </Box>
 
               <Ornament color={T.goldLight}/>
 
-              {/* Mensaje */}
+              {/* Mensaje - Mejorada legibilidad */}
               <Box className="wi-reveal wi-reveal-4" sx={{ textAlign:"center", my:4, px:{xs:1,sm:3} }}>
-                <Typography sx={{ ...serifFont, fontStyle:"italic", fontSize:{xs:15,sm:17}, color:T.textMid, lineHeight:1.9, textShadow:T.ts }}>
+                <Typography sx={{ 
+                  ...serifFont, 
+                  fontStyle:"italic", 
+                  fontSize:{xs:17,sm:19}, // Aumentado tamaño
+                  color:T.text, 
+                  lineHeight:1.9, 
+                  textShadow:T.tsStronger, // Sombra mejorada
+                  fontWeight:500
+                }}>
                   "{mensaje}"
                 </Typography>
               </Box>
 
-              {/* Countdown */}
+              {/* Countdown - Aumentado tamaño */}
               <Box className="wi-reveal wi-reveal-4" sx={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:1.5, mb:4 }}>
                 {[{val:cd.days,label:"Días"},{val:cd.hours,label:"Horas"},{val:cd.minutes,label:"Min"},{val:cd.seconds,label:"Seg"}].map(item=>(
                   <Box key={item.label} sx={{
@@ -342,19 +409,41 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                     borderRadius:"14px", py:2,
                     boxShadow:`0 4px 16px ${T.shadow}`,
                   }}>
-                    <Typography sx={{ ...serifFont, fontSize:{xs:26,sm:32}, fontWeight:500, color:T.gold, lineHeight:1 }}>
+                    <Typography sx={{ 
+                      ...serifFont, 
+                      fontSize:{xs:30,sm:36}, // Aumentado tamaño
+                      fontWeight:600, 
+                      color:T.gold, 
+                      lineHeight:1,
+                      textShadow:"0 1px 4px rgba(255,255,240,0.9)"
+                    }}>
                       {String(item.val).padStart(2,"0")}
                     </Typography>
-                    <Typography sx={{ fontSize:10, letterSpacing:"0.22em", color:T.textFaint, textTransform:"uppercase", mt:0.5 }}>
+                    <Typography sx={{ 
+                      fontSize:11, 
+                      letterSpacing:"0.22em", 
+                      color:T.textFaint, 
+                      textTransform:"uppercase", 
+                      mt:0.5,
+                      fontWeight:500
+                    }}>
                       {item.label}
                     </Typography>
                   </Box>
                 ))}
               </Box>
 
-              {/* Event details */}
+              {/* Event details - Mejorada legibilidad */}
               <Box className="wi-reveal wi-reveal-5" sx={{ mb:4 }}>
-                <Typography sx={{ ...scriptFont, fontSize:38, color:T.roseDark, textAlign:"center", mb:3, textShadow:T.tsScript }}>
+                <Typography sx={{ 
+                  ...scriptFont, 
+                  fontSize:42, // Aumentado tamaño
+                  color:T.roseDark, 
+                  textAlign:"center", 
+                  mb:3, 
+                  textShadow:T.tsScript,
+                  fontWeight:500
+                }}>
                   Detalles del Evento
                 </Typography>
                 <Box sx={{ display:"grid", gridTemplateColumns:{xs:"1fr",sm:"1fr 1fr"}, gap:2 }}>
@@ -373,21 +462,42 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                     }}>
                       <Box sx={{ display:"flex", alignItems:"flex-start", gap:2 }}>
                         <Box sx={{
-                          fontSize:26, width:50, height:50,
+                          fontSize:28, width:54, height:54, // Aumentado tamaño
                           display:"flex", alignItems:"center", justifyContent:"center",
                           background:`radial-gradient(circle,${T.parchment},#fff8f0)`,
                           border:`1px solid ${T.border}`,
                           borderRadius:"14px", flexShrink:0,
                         }}>{item.emoji}</Box>
                         <Box>
-                          <Typography sx={{ fontSize:10, letterSpacing:"0.26em", color:T.textFaint, textTransform:"uppercase", mb:0.3 }}>
+                          <Typography sx={{ 
+                            fontSize:11, 
+                            letterSpacing:"0.26em", 
+                            color:T.textFaint, 
+                            textTransform:"uppercase", 
+                            mb:0.3,
+                            fontWeight:500
+                          }}>
                             {item.title}
                           </Typography>
-                          <Typography sx={{ ...serifFont, fontSize:17, fontWeight:500, color:T.text, lineHeight:1.2, mb:0.2 }}>
+                          <Typography sx={{ 
+                            ...serifFont, 
+                            fontSize:19, // Aumentado tamaño
+                            fontWeight:600, 
+                            color:T.text, 
+                            lineHeight:1.2, 
+                            mb:0.2,
+                            textShadow:T.ts
+                          }}>
                             {item.value}
                           </Typography>
                           {item.sub && (
-                            <Typography sx={{ ...serifFont, fontStyle:"italic", fontSize:13, color:T.textMid }}>
+                            <Typography sx={{ 
+                              ...serifFont, 
+                              fontStyle:"italic", 
+                              fontSize:14, // Aumentado tamaño
+                              color:T.textMid,
+                              fontWeight:500
+                            }}>
                               {item.sub}
                             </Typography>
                           )}
@@ -406,10 +516,14 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                     <Button key={btn.label} className="wi-nav-btn" startIcon={btn.icon}
                       onClick={()=>setActiveSection(btn.section)}
                       sx={{
-                        ...serifFont, fontSize:13, letterSpacing:"0.1em",
+                        ...serifFont, fontSize:14, letterSpacing:"0.1em", // Aumentado tamaño
                         color:T.goldDark, background:"transparent",
                         border:`1px solid ${T.border}`, borderRadius:"24px",
                         px:2.5, py:0.8, textTransform:"none", transition:"all 0.25s",
+                        fontWeight:500,
+                        "&:hover": {
+                          background: "rgba(150,100,30,0.08)",
+                        }
                       }}>
                       {btn.label}
                     </Button>
@@ -420,16 +534,26 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                   <Button className="wi-primary-btn" onClick={()=>setOpenModal(true)}
                     endIcon={<ConfirmationNumberIcon/>}
                     sx={{
-                      ...serifFont, fontSize:15, letterSpacing:"0.14em", color:"#fff",
+                      ...serifFont, fontSize:16, letterSpacing:"0.14em", color:"#fff", // Aumentado tamaño
                       background:`linear-gradient(135deg,${T.rose} 0%,${T.roseDark} 100%)`,
                       borderRadius:"32px", px:5, py:1.4, textTransform:"none",
                       boxShadow:`0 10px 30px rgba(194,97,110,0.30)`, transition:"all 0.3s",
+                      fontWeight:600
                     }}>
                     Confirmar Asistencia
                   </Button>
                 </Box>
 
-                <Typography sx={{ ...serifFont, fontStyle:"italic", fontSize:13, color:T.textFaint, textAlign:"center", display:"block", textShadow:T.tsFaint }}>
+                <Typography sx={{ 
+                  ...serifFont, 
+                  fontStyle:"italic", 
+                  fontSize:14, // Aumentado tamaño
+                  color:T.textMid, 
+                  textAlign:"center", 
+                  display:"block", 
+                  textShadow:T.tsFaint,
+                  fontWeight:500
+                }}>
                   {notasAdicionales}
                 </Typography>
               </Box>
