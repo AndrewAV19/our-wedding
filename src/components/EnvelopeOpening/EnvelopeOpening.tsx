@@ -1,5 +1,5 @@
 // components/EnvelopeOpening.tsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 interface EnvelopeOpeningProps {
   onOpen: () => void;
@@ -22,7 +22,15 @@ interface Star {
   duration: number;
 }
 
+interface Countdown {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 const PETAL_EMOJIS = ["🌸", "🌺", "✿", "❀"];
+const WEDDING_DATE = "2027-04-17T17:00:00";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Pinyon+Script&display=swap');
@@ -266,12 +274,60 @@ const styles = `
     color: #c9738a;
     margin-top: 4px;
   }
+
+  /* Countdown inside letter */
+  .env-countdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 20px;
+    margin-bottom: 4px;
+  }
+
+  .env-countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(160deg, #fff0f4, #fce8ef);
+    border: 0.5px solid #f0c4d4;
+    border-radius: 10px;
+    padding: 8px 4px 6px;
+  }
+
+  .env-countdown-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: #b5436a;
+    line-height: 1;
+  }
+
+  .env-countdown-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c9738a;
+    margin-top: 3px;
+  }
+
+  .env-countdown-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #c9738a;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
 `;
 
 const EnvelopeOpening: React.FC<EnvelopeOpeningProps> = ({ onOpen }) => {
   const [opened, setOpened] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const calledOnOpen = useRef(false);
+  const [countdown, setCountdown] = useState<Countdown>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
   const [petals] = useState<Petal[]>(() =>
     Array.from({ length: 28 }, (_, i) => ({
       id: i,
@@ -293,6 +349,24 @@ const EnvelopeOpening: React.FC<EnvelopeOpeningProps> = ({ onOpen }) => {
     })),
   );
 
+  // Countdown timer
+  useEffect(() => {
+    const tick = () => {
+      const diff = new Date(WEDDING_DATE).getTime() - Date.now();
+      if (diff > 0) {
+        setCountdown({
+          days:    Math.floor(diff / 86400000),
+          hours:   Math.floor((diff / 3600000) % 24),
+          minutes: Math.floor((diff / 60000) % 60),
+          seconds: Math.floor((diff / 1000) % 60),
+        });
+      }
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, []);
+
   const handleOpen = () => {
     if (opened) return;
     setOpened(true);
@@ -307,6 +381,13 @@ const EnvelopeOpening: React.FC<EnvelopeOpeningProps> = ({ onOpen }) => {
       }, 10000);
     }, 900);
   };
+
+  const cdItems = [
+    { val: countdown.days,    label: "Días"  },
+    { val: countdown.hours,   label: "Horas" },
+    { val: countdown.minutes, label: "Min"   },
+    { val: countdown.seconds, label: "Seg"   },
+  ];
 
   return (
     <>
@@ -468,6 +549,19 @@ const EnvelopeOpening: React.FC<EnvelopeOpeningProps> = ({ onOpen }) => {
 
             <div className="env-letter-date">17 · Abril · 2027</div>
             <div className="env-letter-city">La Barca, Jalisco</div>
+
+            {/* ── Cuenta regresiva ── */}
+            <div className="env-countdown-title">Faltan</div>
+            <div className="env-countdown">
+              {cdItems.map((item) => (
+                <div key={item.label} className="env-countdown-item">
+                  <span className="env-countdown-number">
+                    {String(item.val).padStart(2, "0")}
+                  </span>
+                  <span className="env-countdown-label">{item.label}</span>
+                </div>
+              ))}
+            </div>
 
             <div className="env-letter-row" style={{ marginTop: 20 }}>
               <div className="env-letter-line" />
