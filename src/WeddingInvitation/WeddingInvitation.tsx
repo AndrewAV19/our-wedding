@@ -25,7 +25,8 @@ import {
 import HistorySection from "../components/HistorySection/HistorySection";
 import MusicPlayer from "../components/MusicPlayer/MusicPlayer";
 import AttendanceForm from "../components/AttendanceForm/AttendanceForm";
-import DetailsSection from "../components/DetailsSection/DetailsSection";
+import GiftsSection from "../components/Giftssection/Giftseciont";
+import LocationSection from "../components/Locationsection/Locationsection";
 
 interface TimelineEvent {
   time: string;
@@ -298,7 +299,6 @@ const RomanticCarousel: React.FC = () => {
   const prev = () => goTo(current - 1);
   const next = () => goTo(current + 1);
 
-  // Auto-advance
   useEffect(() => {
     autoRef.current = setInterval(() => goTo(current + 1), 4500);
     return () => {
@@ -306,30 +306,22 @@ const RomanticCarousel: React.FC = () => {
     };
   }, [current, goTo]);
 
-  // Show caption on mount
   useEffect(() => {
     const t = setTimeout(() => setCaptionVisible(true), 400);
     return () => clearTimeout(t);
   }, []);
 
-  // Touch / drag
   const onPointerDown = (e: React.PointerEvent) => {
     setIsDragging(true);
     dragStartX.current = e.clientX;
   };
   const onPointerUp = (e: React.PointerEvent) => {
     if (!isDragging) return;
-
     setIsDragging(false);
-
     const dx = e.clientX - dragStartX.current;
-
     if (Math.abs(dx) > 40) {
-      if (dx < 0) {
-        next();
-      } else {
-        prev();
-      }
+      if (dx < 0) next();
+      else prev();
     }
   };
 
@@ -337,9 +329,9 @@ const RomanticCarousel: React.FC = () => {
     <>
       <style>{carouselStyles}</style>
       <div className="rc-header">
-        <span className="rc-header-script">Nuestra Historia</span>
+        <span className="rc-header-script">Momentos que atesoramos</span>
         <span className="rc-header-sub">
-          <span className="rc-heart-anim">♥</span> momentos que atesoramos{" "}
+          <span className="rc-heart-anim">♥</span>{" "}
           <span className="rc-heart-anim">♥</span>
         </span>
       </div>
@@ -350,7 +342,6 @@ const RomanticCarousel: React.FC = () => {
         onPointerUp={onPointerUp}
         onPointerLeave={() => setIsDragging(false)}
       >
-        {/* Track */}
         <div
           className="rc-track"
           style={{ transform: `translateX(-${current * 100}%)` }}
@@ -365,40 +356,27 @@ const RomanticCarousel: React.FC = () => {
           ))}
         </div>
 
-        {/* Overlays */}
         <div className="rc-fade-top" />
         <div className="rc-fade-bottom" />
 
-        {/* Caption */}
         <div
           className={`rc-caption${captionVisible ? " rc-caption-visible" : ""}`}
         >
           <span className="rc-caption-text">{CAPTIONS[current]}</span>
         </div>
 
-        {/* Counter */}
         <div className="rc-counter">
           <span className="rc-heart-anim">♥</span>
           {current + 1} / {total}
         </div>
 
-        {/* Arrows */}
-        <button
-          className="rc-arrow rc-arrow-left"
-          onClick={prev}
-          aria-label="Anterior"
-        >
+        <button className="rc-arrow rc-arrow-left" onClick={prev} aria-label="Anterior">
           <ChevronLeft style={{ fontSize: 18, color: "#b5436a" }} />
         </button>
-        <button
-          className="rc-arrow rc-arrow-right"
-          onClick={next}
-          aria-label="Siguiente"
-        >
+        <button className="rc-arrow rc-arrow-right" onClick={next} aria-label="Siguiente">
           <ChevronRight style={{ fontSize: 18, color: "#b5436a" }} />
         </button>
 
-        {/* Dots */}
         <div className="rc-dots">
           {CAROUSEL_IMAGES.map((_, i) => (
             <button
@@ -414,7 +392,7 @@ const RomanticCarousel: React.FC = () => {
   );
 };
 
-// Tiny local aliases to avoid import conflict with ChevronLeft from MUI
+// Tiny local aliases
 const { ChevronLeft, ChevronRight } = {
   ChevronLeft: (
     props: React.SVGProps<SVGSVGElement> & { style?: React.CSSProperties },
@@ -477,10 +455,18 @@ const globalStyles = `
   .wi-reveal-5 { animation-delay: 0.9s; }
   .wi-reveal-6 { animation-delay: 1.1s; }
 
+  .wi-card-detail {
+    transition: all 0.35s cubic-bezier(0.34,1.2,0.64,1) !important;
+  }
   .wi-card-detail:hover {
     transform: translateY(-6px) !important;
     box-shadow: 0 28px 56px rgba(139,90,60,0.18) !important;
     border-color: rgba(180,130,90,0.4) !important;
+  }
+  .wi-card-location:hover {
+    transform: translateY(-6px) scale(1.01) !important;
+    box-shadow: 0 28px 56px rgba(139,90,60,0.22) !important;
+    border-color: rgba(180,100,120,0.5) !important;
   }
   .wi-nav-btn:hover {
     background: rgba(139,90,60,0.08) !important;
@@ -558,6 +544,16 @@ const Ornament: React.FC<{ color: string }> = ({ color }) => (
   </Box>
 );
 
+// ─── Tipo para las cards de evento ────────────────────────────────────────────
+interface EventCard {
+  emoji: string;
+  title: string;
+  value: string;
+  sub: string;
+  onClick?: () => void;
+  isClickable?: boolean;
+}
+
 export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
   novio = "Andrew",
   novia = "Montserrat",
@@ -573,8 +569,9 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
   codigoDresscode = "Nos reservamos el blanco",
   notasAdicionales = "No olvides traer tu mejor sonrisa y muchas ganas de celebrar",
 }) => {
+  // ← CAMBIO: se agrega "location" al tipo de activeSection
   const [activeSection, setActiveSection] = useState<
-    "invitation" | "history" | "details"
+    "invitation" | "history" | "details" | "location"
   >("invitation");
   const [openModal, setOpenModal] = useState(false);
   const particles = useParticles();
@@ -616,6 +613,36 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
       label: "Mesa de Regalos",
       icon: <GiftIcon sx={{ fontSize: 15 }} />,
       section: "details" as const,
+    },
+  ];
+
+  // ─── Cards del evento con onClick en "Lugar" ───────────────────────────────
+  const eventCards: EventCard[] = [
+    {
+      emoji: "📅",
+      title: "Fecha",
+      value: fecha,
+      sub: "Viernes",
+    },
+    {
+      emoji: "🕔",
+      title: "Ceremonia",
+      value: hora,
+      sub: "En punto",
+    },
+    {
+      emoji: "🏛️",
+      title: "Lugar",
+      value: lugar,
+      sub: direccion,
+      onClick: () => setActiveSection("location"), // ← NUEVO
+      isClickable: true,                            // ← NUEVO
+    },
+    {
+      emoji: "👗",
+      title: "Vestimenta",
+      value: codigoVestimenta,
+      sub: codigoDresscode,
     },
   ];
 
@@ -931,7 +958,7 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                 </Typography>
               </Box>
 
-              {/* ── Romantic Carousel (replaces countdown) ── */}
+              {/* Carousel */}
               <Box className="wi-reveal wi-reveal-4" sx={{ mb: 4 }}>
                 <RomanticCarousel />
               </Box>
@@ -958,44 +985,49 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                     gap: 2,
                   }}
                 >
-                  {[
-                    {
-                      emoji: "📅",
-                      title: "Fecha",
-                      value: fecha,
-                      sub: "Viernes",
-                    },
-                    {
-                      emoji: "🕔",
-                      title: "Ceremonia",
-                      value: hora,
-                      sub: "En punto",
-                    },
-                    {
-                      emoji: "🏛️",
-                      title: "Lugar",
-                      value: lugar,
-                      sub: direccion,
-                    },
-                    {
-                      emoji: "👗",
-                      title: "Vestimenta",
-                      value: codigoVestimenta,
-                      sub: codigoDresscode,
-                    },
-                  ].map((item) => (
+                  {eventCards.map((item) => (
                     <Box
                       key={item.title}
-                      className="wi-card-detail"
+                      className={`wi-card-detail${item.isClickable ? " wi-card-location" : ""}`}
+                      onClick={item.onClick}
                       sx={{
-                        background: "linear-gradient(145deg,#fffdf9,#fdf5e8)",
-                        border: `1px solid ${T.border}`,
+                        background: item.isClickable
+                          ? `linear-gradient(145deg,#fff9f5,#fdf0e8)`
+                          : "linear-gradient(145deg,#fffdf9,#fdf5e8)",
+                        border: item.isClickable
+                          ? `1px solid rgba(160,100,60,0.35)`
+                          : `1px solid ${T.border}`,
                         borderRadius: "18px",
                         p: 2.5,
+                        cursor: item.isClickable ? "pointer" : "default",
                         transition: "all 0.35s cubic-bezier(0.34,1.2,0.64,1)",
                         boxShadow: `0 6px 20px ${T.shadow}`,
+                        position: "relative",
+                        overflow: "hidden",
                       }}
                     >
+                      {/* Indicador visual de clickeable en la card del Lugar */}
+                      {item.isClickable && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: 10,
+                            right: 12,
+                            fontSize: 10,
+                            letterSpacing: "0.18em",
+                            color: T.rose,
+                            opacity: 0.65,
+                            fontFamily: "'Cormorant Garamond',serif",
+                            fontStyle: "italic",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.4,
+                          }}
+                        >
+                          Ver ubicación →
+                        </Box>
+                      )}
+
                       <Box
                         sx={{
                           display: "flex",
@@ -1241,8 +1273,11 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
         {activeSection === "history" && (
           <HistorySection novio={novio} novia={novia} historia={historia} />
         )}
-        {activeSection === "details" && (
-          <DetailsSection
+        {activeSection === "details" && <GiftsSection />}
+
+        {/* ← NUEVO: renderiza LocationSection */}
+        {activeSection === "location" && (
+          <LocationSection
             lugar={lugar}
             direccion={direccion}
             coordenadasGPS={coordenadasGPS}
