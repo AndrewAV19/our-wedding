@@ -370,10 +370,18 @@ const RomanticCarousel: React.FC = () => {
           {current + 1} / {total}
         </div>
 
-        <button className="rc-arrow rc-arrow-left" onClick={prev} aria-label="Anterior">
+        <button
+          className="rc-arrow rc-arrow-left"
+          onClick={prev}
+          aria-label="Anterior"
+        >
           <ChevronLeft style={{ fontSize: 18, color: "#b5436a" }} />
         </button>
-        <button className="rc-arrow rc-arrow-right" onClick={next} aria-label="Siguiente">
+        <button
+          className="rc-arrow rc-arrow-right"
+          onClick={next}
+          aria-label="Siguiente"
+        >
           <ChevronRight style={{ fontSize: 18, color: "#b5436a" }} />
         </button>
 
@@ -636,7 +644,7 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
       value: lugar,
       sub: direccion,
       onClick: () => setActiveSection("location"), // ← NUEVO
-      isClickable: true,                            // ← NUEVO
+      isClickable: true, // ← NUEVO
     },
     {
       emoji: "👗",
@@ -795,7 +803,7 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                     letterSpacing: "0.02em",
                   }}
                 >
-                  {novio}
+                  {novia}
                 </Typography>
                 <Box
                   sx={{
@@ -842,7 +850,7 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                     letterSpacing: "0.02em",
                   }}
                 >
-                  {novia}
+                  {novio}
                 </Typography>
               </Box>
 
@@ -889,8 +897,8 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                   Con la bendición de nuestros padres
                 </Typography>
                 {[
-                  "Sra. Yolanda Valenzuela Trujillo",
-                  "Sr. Adrian Alonso Díaz",
+                  "Sra. Isis del Carmen Marquez Maciel",
+                  "Sr. Francisco Hernandez Castro",
                 ].map((p) => (
                   <Typography
                     key={p}
@@ -917,8 +925,8 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                   ✦ ✦ ✦
                 </Box>
                 {[
-                  "Sra. Isis del Carmen Marquez",
-                  "Sr. Francisco Hernandez",
+                  "Sra. Yolanda Valenzuela Trujillo",
+                  "Sr. Adrian Alonso Díaz",
                 ].map((p) => (
                   <Typography
                     key={p}
