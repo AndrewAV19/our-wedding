@@ -1368,7 +1368,7 @@ export const WeddingInvitation: React.FC<WeddingInvitationProps> = ({
                 ¡Nos encantaría que nos acompañes en este día tan especial!
               </Typography>
               <Chip
-                label={`${novio} & ${novia}`}
+                label={`${novia} & ${novio}`}
                 sx={{
                   fontFamily: "'Cormorant Garamond',serif",
                   fontSize: 14,

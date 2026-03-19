@@ -169,8 +169,8 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
     if (!form.autorizado)       return triggerError("Confirma que deseas enviar tu mensaje 💕");
 
     const txt = form.confirmacion === "si"
-      ? `🎉 *¡CONFIRMO ASISTENCIA!* 🎉\n\nQueridos ${novio} y ${novia}, ¡qué emoción! 💖\n\n✅ Asistiré: ¡SÍ!\n👥 Acompañantes: ${form.acompanantes}\n${form.mensaje ? `\n💌 "${form.mensaje}"\n` : ""}\n¡Nos vemos pronto! 🎊\nCon cariño, ${form.nombre} 💫`
-      : `💔 *NO PODRÉ ASISTIR* 💔\n\nQueridos ${novio} y ${novia},\n\n❌ Lamentablemente no podré acompañarlos.\n${form.mensaje ? `\n💌 "${form.mensaje}"\n` : ""}\n¡Que tengan el día más hermoso! 🌟\nCon cariño, ${form.nombre} 💕`;
+      ? `🎉 *¡CONFIRMO ASISTENCIA!* 🎉\n\nQueridos ${novia} y ${novio}, ¡qué emoción! 💖\n\n✅ Asistiré: ¡SÍ!\n👥 Acompañantes: ${form.acompanantes}\n${form.mensaje ? `\n💌 "${form.mensaje}"\n` : ""}\n¡Nos vemos pronto! 🎊\nCon cariño, ${form.nombre} 💫`
+      : `💔 *NO PODRÉ ASISTIR* 💔\n\nQueridos ${novia} y ${novio},\n\n❌ Lamentablemente no podré acompañarlos.\n${form.mensaje ? `\n💌 "${form.mensaje}"\n` : ""}\n¡Que tengan el día más hermoso! 🌟\nCon cariño, ${form.nombre} 💕`;
 
     try {
       await fetch(
